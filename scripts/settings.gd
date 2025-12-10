@@ -1,0 +1,76 @@
+extends Control
+
+
+var awaiting_input = false
+var current_action = ""
+var previous_key = 0
+
+@onready var key_buttons = {
+	"MoveUp": $SettingsContainer/KeyMoveUp/Button,
+	"MoveDown": $SettingsContainer/KeyMoveDown/Button,
+	"MoveLeft": $SettingsContainer/KeyMoveLeft/Button,
+	"MoveRight": $SettingsContainer/KeyMoveRight/Button,
+	"Focus": $SettingsContainer/KeyFocus/Button,
+}
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	update_key_labels()
+	
+	for action in key_buttons:
+		key_buttons[action].pressed.connect(_on_key_button_pressed.bind(action))
+	
+	$SettingsContainer/Back.pressed.connect(_on_back_pressed)
+
+
+
+func update_key_labels():
+	for key in key_buttons:
+		var keycode = InputManager.get_key(key)
+		key_buttons[key].text = OS.get_keycode_string(keycode)
+
+
+func _on_key_button_pressed(action: String):
+	awaiting_input = true
+	current_action = action
+	key_buttons[action].text = "Input key..."
+
+
+func is_key_used(key: int, exclude_action: String) -> bool:
+	for action in key_buttons:
+		if action == exclude_action:
+			continue
+		if InputManager.get_key(action) == key:
+			return true
+	return false
+
+
+func _input(event):
+	if not awaiting_input:
+		return
+
+	if event is InputEventKey and event.pressed:
+		var key = event.physical_keycode if event.physical_keycode != 0 else event.keycode
+
+		if is_key_used(key, current_action):
+			key_buttons[current_action].text = OS.get_keycode_string(previous_key)
+
+			awaiting_input = false
+			current_action = ""
+			get_viewport().set_input_as_handled()
+		
+		InputManager.rebind_key(current_action, key)
+		InputManager.save_keys()
+
+		update_key_labels()
+
+		awaiting_input = false
+		current_action = ""
+
+		# without that ui action activets after rebinding
+		get_viewport().set_input_as_handled()
+
+
+func _on_back_pressed():
+	SceneManager.change_scene("res://scenes/menu.tscn")

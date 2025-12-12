@@ -5,22 +5,49 @@ extends Area2D
 @export var focused_speed = 100.0
 
 # Play area bounds (you can adjust these)
-@export var play_area = Rect2(20, 20, 800, 600)
+@export var play_area = Rect2()
+@export var initial_position = Vector2(50, 50)
 
 @export var player_radius = 20.0
+@export var hitbox_radius = 5.0
+@export var graze_radius = 30.0
 @export var player_color = Color.MAGENTA
+@export var hitbox_color = Color.RED
 
 var current_speed = normal_speed
 # Track most recent keys
 var last_horizontal = ""  # "left" or "right"
 var last_vertical = ""    # "up" or "down"
 
+@onready var graze_area = $GrazeArea
+
+signal player_hit
+signal player_grazed
+
 func _draw() -> void:
 	draw_circle(Vector2.ZERO, player_radius, player_color)
+	draw_circle(Vector2.ZERO, hitbox_radius, hitbox_color)
 
 func _ready() -> void:
 	# Position player at center of play area
-	global_position = play_area.get_center()
+	$CollisionShape2D.scale = Vector2(hitbox_radius / player_radius, hitbox_radius / player_radius)
+	$GrazeArea/CollisionShape2D.scale = Vector2(graze_radius / player_radius, graze_radius / player_radius)
+	global_position = Vector2(play_area.position.x + initial_position.x, play_area.position.y + initial_position.y)
+	
+	area_entered.connect(_on_projectile_hit)
+	graze_area.area_entered.connect(_on_projectile_grazed)
+
+func _on_projectile_hit(projectile):
+	# Player was hit - game over
+	emit_signal("player_hit")
+	print("Player hit! Game Over")
+
+func _on_projectile_grazed(projectile):
+	# Check if this projectile has already been grazed
+	if projectile.has_method("is_grazed") and not projectile.is_grazed():
+		projectile.mark_as_grazed()
+		emit_signal("player_grazed")
+		print("Grazed!")
 
 func _input(event) -> void:
 	if event.is_action_pressed("MoveLeft"):

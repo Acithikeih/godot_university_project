@@ -1,12 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://njv1y7mrmyxr"]
+[gd_scene load_steps=4 format=3 uid="uid://njv1y7mrmyxr"]
 
 [ext_resource type="Script" uid="uid://dxafsdxk8sn8v" path="res://scripts/player.gd" id="1_3vyb7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3vyb7"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
+
 [node name="Player" type="Area2D"]
+collision_mask = 2
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_3vyb7")
 debug_color = Color(0.5287455, 0.14675707, 0.4428609, 0.41960785)
+
+[node name="GrazeArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrazeArea"]
+shape = SubResource("CircleShape2D_g2els")
+debug_color = Color(0.6708775, 0.47215748, 0.5213155, 0.41960785)

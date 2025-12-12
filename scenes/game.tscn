@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfktwdglyol8j"]
+[gd_scene load_steps=4 format=3 uid="uid://dfktwdglyol8j"]
 
+[ext_resource type="Script" uid="uid://bvyaiddi5dstm" path="res://scripts/game.gd" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://njv1y7mrmyxr" path="res://scenes/player.tscn" id="2_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://b24j63t7hjkc6" path="res://scenes/pause_menu.tscn" id="3_lnu2h"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_yqjtg")
 
 [node name="Space" type="Node2D" parent="."]
 
@@ -13,5 +16,43 @@ offset_right = 820.0
 offset_bottom = 620.0
 color = Color(0.47397572, 0.47397572, 0.47397572, 1)
 
-[node name="Player" parent="Space" instance=ExtResource("2_lnu2h")]
+[node name="Clip" type="ColorRect" parent="Space"]
+clip_children = 1
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 820.0
+offset_bottom = 620.0
+
+[node name="Player" parent="Space/Clip" instance=ExtResource("2_lnu2h")]
 position = Vector2(307, 238)
+normal_speed = 250.0
+focused_speed = 125.0
+initial_position = Vector2(200, 200)
+graze_radius = 40.0
+player_color = Color(0, 0, 0, 1)
+hitbox_color = Color(1, 1, 0, 1)
+
+[node name="Projectiles" type="Node2D" parent="Space/Clip"]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+offset_left = 840.0
+offset_top = 20.0
+offset_right = 880.0
+offset_bottom = 60.0
+
+[node name="ImportantInfo" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "It's almost as good as Touhou
+(or even better)"
+
+[node name="Time" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "time"
+
+[node name="Graze" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "graze"
+
+[node name="PauseMenu" parent="." instance=ExtResource("3_lnu2h")]

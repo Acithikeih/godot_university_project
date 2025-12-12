@@ -1,9 +1,12 @@
-extends Control
+extends CanvasLayer
 
 
 var awaiting_input = false
 var current_action = ""
 var previous_key = 0
+var came_from_game = false  # Track if we came from in-game
+
+signal back_pressed
 
 @onready var key_buttons = {
 	"MoveUp": $SettingsContainer/KeyMoveUp/Button,
@@ -16,12 +19,19 @@ var previous_key = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	
+	
 	update_key_labels()
 	
 	for action in key_buttons:
 		key_buttons[action].pressed.connect(_on_key_button_pressed.bind(action))
 	
 	$SettingsContainer/Back.pressed.connect(_on_back_pressed)
+	
+	# Check if game is paused (came from in-game)
+	came_from_game = get_tree().paused
+	if came_from_game:
+		process_mode = Node.PROCESS_MODE_ALWAYS
 
 
 
@@ -73,4 +83,8 @@ func _input(event):
 
 
 func _on_back_pressed():
-	SceneManager.change_scene("res://scenes/menu.tscn")
+	if came_from_game:
+		emit_signal("back_pressed")
+	else:
+		# Return to main menu
+		SceneManager.change_scene("res://scenes/menu.tscn")

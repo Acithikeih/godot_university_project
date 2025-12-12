@@ -1,3 +1,17 @@
-[gd_scene format=3 uid="uid://dfktwdglyol8j"]
+[gd_scene load_steps=2 format=3 uid="uid://dfktwdglyol8j"]
+
+[ext_resource type="PackedScene" uid="uid://njv1y7mrmyxr" path="res://scenes/player.tscn" id="2_lnu2h"]
 
 [node name="Game" type="Node2D"]
+
+[node name="Space" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="Space"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 820.0
+offset_bottom = 620.0
+color = Color(0.47397572, 0.47397572, 0.47397572, 1)
+
+[node name="Player" parent="Space" instance=ExtResource("2_lnu2h")]
+position = Vector2(307, 238)

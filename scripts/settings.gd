@@ -36,13 +36,13 @@ func _ready() -> void:
 
 
 
-func update_key_labels():
+func update_key_labels() -> void:
 	for key in key_buttons:
 		var keycode = InputManager.get_key(key)
 		key_buttons[key].text = OS.get_keycode_string(keycode)
 
 
-func _on_key_button_pressed(action: String):
+func _on_key_button_pressed(action: String) -> void:
 	awaiting_input = true
 	current_action = action
 	key_buttons[action].text = "Input key..."
@@ -57,7 +57,7 @@ func is_key_used(key: int, exclude_action: String) -> bool:
 	return false
 
 
-func _input(event):
+func _input(event) -> void:
 	if not awaiting_input:
 		return
 
@@ -83,7 +83,7 @@ func _input(event):
 		get_viewport().set_input_as_handled()
 
 
-func _on_back_pressed():
+func _on_back_pressed() -> void:
 	if came_from_game:
 		emit_signal("back_pressed")
 	else:

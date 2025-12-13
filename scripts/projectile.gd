@@ -35,5 +35,5 @@ func set_velocity(velocity: Vector2) -> void:
 func is_grazed() -> bool:
 	return has_grazed
 
-func mark_as_grazed():
+func mark_as_grazed() -> void:
 	has_grazed = true

@@ -15,7 +15,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 	
-func save_keys():
+func save_keys() -> void:
 	for action in InputMap.get_actions():
 		if action.begins_with("ui_"):
 			continue
@@ -29,7 +29,7 @@ func save_keys():
 	
 	config.save(CONFIG_PATH)
 
-func load_keys():
+func load_keys() -> void:
 	if config.load(CONFIG_PATH) != OK:
 		save_keys()
 		return
@@ -38,7 +38,7 @@ func load_keys():
 		var keycode = config.get_value("keys", action)
 		rebind_key(action, keycode)
 
-func rebind_key(action: String, keycode: int):
+func rebind_key(action: String, keycode: int) -> void:
 	InputMap.action_erase_events(action)
 
 	var event = InputEventKey.new()

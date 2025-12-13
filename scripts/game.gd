@@ -6,6 +6,7 @@ extends Node2D
 @onready var player = $Space/Clip/Player
 @onready var clip = $Space/Clip
 @onready var projectiles = $Space/Clip/Projectiles
+@onready var source_spawner = $Space/Clip/SourceSpawner
 
 @onready var time_label = $UI/VBoxContainer/Time
 @onready var graze_label = $UI/VBoxContainer/Graze
@@ -28,6 +29,11 @@ func _ready() -> void:
 	# Pass play area to player
 	player.play_area = Rect2(play_area_rect.position, play_area_rect.size)
 	
+	source_spawner.play_area_size = play_area_rect.size
+	source_spawner.play_area_position = play_area_rect.position
+	source_spawner.set_player_reference(player)
+	source_spawner.set_projectile_container(projectiles)
+	
 	player.player_hit.connect(_on_player_hit)
 	player.player_grazed.connect(_on_player_grazed)
 	
@@ -45,19 +51,16 @@ func _ready() -> void:
 	GameManager.start_game()
 	update_ui()
 
-func _process(delta):
+func _process(delta) -> void:
 	if not get_tree().paused:
 		GameManager.update_time(delta)
 
-func _input(event):
+func _input(event) -> void:
 	if event.is_action_pressed("Pause") and settings_instance == null and not pause_menu.visible:
 		pause_menu.show_menu()
 		get_viewport().set_input_as_handled()
-	
-	if event.is_action_pressed("ui_accept"):  # SPACE key
-		spawn_test_projectile()
 
-func spawn_test_projectile():
+func spawn_test_projectile() -> void:
 	var projectile = projectile_scene.instantiate()
 
 	# Spawn at top center of play area (relative to ClipRect)
@@ -73,35 +76,35 @@ func spawn_test_projectile():
 	projectiles.add_child(projectile)
 
 # Generic spawn function you'll use later
-func spawn_projectile(pos: Vector2, dir: Vector2, projectile_speed: float = 200.0):
+func spawn_projectile(pos: Vector2, dir: Vector2, projectile_speed: float = 200.0) -> void:
 	var projectile = projectile_scene.instantiate()
 	projectile.position = pos
 	projectile.set_direction(dir)
 	projectile.speed = projectile_speed
 	projectiles.add_child(projectile)
 
-func _on_player_hit():
+func _on_player_hit() -> void:
 	GameManager.stop_game()
 	game_over_menu.show_game_over(GameManager.get_time(), GameManager.get_graze_count())
 
-func _on_player_grazed():
+func _on_player_grazed() -> void:
 	GameManager.increment_graze()
 
-func _on_graze_updated(new_count):
+func _on_graze_updated(new_count) -> void:
 	graze_label.text = "%d" % new_count
 
-func _on_time_updated(new_time):
+func _on_time_updated(new_time) -> void:
 	time_label.text = "%.2f" % new_time
 
-func update_ui():
+func update_ui() -> void:
 	time_label.text = "%.2f" % GameManager.get_time()
 	graze_label.text = "%d" % GameManager.get_graze_count()
 
-func _on_pause_resume():
+func _on_pause_resume() -> void:
 	# Already handled by pause_menu.hide_menu()
 	pass
 
-func _on_pause_settings():
+func _on_pause_settings() -> void:
 	# Hide pause menu temporarily
 	pause_menu.hide()
 
@@ -113,7 +116,7 @@ func _on_pause_settings():
 	# Connect back signal
 	settings_instance.back_pressed.connect(_on_settings_back)
 
-func _on_settings_back():
+func _on_settings_back() -> void:
 	# Remove settings
 	if settings_instance:
 		settings_instance.queue_free()
@@ -122,13 +125,13 @@ func _on_settings_back():
 	# Show pause menu again
 	pause_menu.show()
 
-func _on_pause_exit():
+func _on_pause_exit() -> void:
 	# Unpause before changing scene
 	get_tree().paused = false
 	GameManager.stop_game()
 	SceneManager.change_scene("res://scenes/menu.tscn")
 
-func _on_game_over_exit():
+func _on_game_over_exit() -> void:
 	# Unpause before changing scene
 	get_tree().paused = false
 	GameManager.stop_game()

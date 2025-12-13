@@ -37,17 +37,15 @@ func _ready() -> void:
 	area_entered.connect(_on_projectile_hit)
 	graze_area.area_entered.connect(_on_projectile_grazed)
 
-func _on_projectile_hit(projectile):
+func _on_projectile_hit(projectile) -> void:
 	# Player was hit - game over
 	emit_signal("player_hit")
-	print("Player hit! Game Over")
 
-func _on_projectile_grazed(projectile):
+func _on_projectile_grazed(projectile) -> void:
 	# Check if this projectile has already been grazed
 	if projectile.has_method("is_grazed") and not projectile.is_grazed():
 		projectile.mark_as_grazed()
 		emit_signal("player_grazed")
-		print("Grazed!")
 
 func _input(event) -> void:
 	if event.is_action_pressed("MoveLeft"):
@@ -115,12 +113,12 @@ func _process(delta) -> void:
 	global_position.x = clamp(global_position.x, play_area.position.x, play_area.position.x + play_area.size.x)
 	global_position.y = clamp(global_position.y, play_area.position.y, play_area.position.y + play_area.size.y)
 
-func _notification(what):
+func _notification(what) -> void:
 	if what == NOTIFICATION_PAUSED or what == NOTIFICATION_UNPAUSED:
 		# Reset movement state when pausing/unpausing
 		reset_movement_state()
 
-func reset_movement_state():
+func reset_movement_state() -> void:
 	# Check actual key states and update movement
 	if Input.is_action_pressed("MoveLeft"):
 		last_horizontal = "left"

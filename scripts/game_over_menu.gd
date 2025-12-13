@@ -7,7 +7,7 @@ extends CanvasLayer
 
 signal exit_pressed
 
-func _ready():
+func _ready() -> void:
 	# Connect button signal
 	exit_button.pressed.connect(_on_exit_pressed)
 
@@ -17,7 +17,7 @@ func _ready():
 	# Make sure this menu works when game is paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
-func show_game_over(time: float, graze: int):
+func show_game_over(time: float, graze: int) -> void:
 	# Update stats
 	time_label.text = "%.2f" % time
 	graze_label.text = "%d" % graze
@@ -26,5 +26,5 @@ func show_game_over(time: float, graze: int):
 	show()
 	get_tree().paused = true
 
-func _on_exit_pressed():
+func _on_exit_pressed() -> void:
 	emit_signal("exit_pressed")

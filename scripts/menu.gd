@@ -8,11 +8,11 @@ func _ready() -> void:
 	$MenuContainer/Quit.pressed.connect(_on_quit_pressed)
 
 
-func _on_start_pressed():
+func _on_start_pressed() -> void:
 	SceneManager.change_scene("res://scenes/game.tscn")
 
-func _on_settings_pressed():
+func _on_settings_pressed() -> void:
 	SceneManager.change_scene("res://scenes/settings.tscn")
 
-func _on_quit_pressed():
+func _on_quit_pressed() -> void:
 	get_tree().quit()

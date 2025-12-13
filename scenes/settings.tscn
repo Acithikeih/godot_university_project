@@ -69,6 +69,16 @@ text = "Focus"
 [node name="Button" type="Button" parent="SettingsContainer/KeyFocus"]
 layout_mode = 2
 
+[node name="KeyPause" type="HBoxContainer" parent="SettingsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsContainer/KeyPause"]
+layout_mode = 2
+text = "Pause"
+
+[node name="Button" type="Button" parent="SettingsContainer/KeyPause"]
+layout_mode = 2
+
 [node name="Back" type="Button" parent="SettingsContainer"]
 layout_mode = 2
 text = "Back"

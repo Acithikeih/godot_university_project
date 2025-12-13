@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://drmaspc1ueb3w"]
+
+[ext_resource type="Script" uid="uid://qs5cjljs5ivt" path="res://scripts/game_over_menu.gd" id="1_6ebp1"]
+
+[node name="GameOverMenu" type="CanvasLayer"]
+script = ExtResource("1_6ebp1")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.16862746, 0.22745098, 0.38431373, 0.63529414)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "you're bad at dodging lol"
+
+[node name="Time" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Key" type="Label" parent="VBoxContainer/Time"]
+layout_mode = 2
+text = "TIme"
+
+[node name="Value" type="Label" parent="VBoxContainer/Time"]
+layout_mode = 2
+text = "time"
+
+[node name="Graze" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Key" type="Label" parent="VBoxContainer/Graze"]
+layout_mode = 2
+text = "Graze"
+
+[node name="Value" type="Label" parent="VBoxContainer/Graze"]
+layout_mode = 2
+text = "graze"
+
+[node name="Quit" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Quit to main menu"

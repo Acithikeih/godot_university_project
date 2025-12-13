@@ -11,6 +11,7 @@ extends Node2D
 @onready var graze_label = $UI/VBoxContainer/Graze
 
 @onready var pause_menu = $PauseMenu
+@onready var game_over_menu = $GameOverMenu
 
 var projectile_scene = preload("res://scenes/projectile.tscn")
 var settings_scene = preload("res://scenes/settings.tscn")
@@ -36,21 +37,22 @@ func _ready() -> void:
 	pause_menu.resume_pressed.connect(_on_pause_resume)
 	pause_menu.settings_pressed.connect(_on_pause_settings)
 	pause_menu.exit_pressed.connect(_on_pause_exit)
+	
+	# Connect game over menu signals
+	game_over_menu.exit_pressed.connect(_on_game_over_exit)
 
 	# Start game
-	update_ui()
 	GameManager.start_game()
+	update_ui()
 
 func _process(delta):
 	if not get_tree().paused:
 		GameManager.update_time(delta)
 
 func _input(event):
-	if event.is_action_pressed("ui_cancel") and not pause_menu.visible:
+	if event.is_action_pressed("Pause") and settings_instance == null and not pause_menu.visible:
 		pause_menu.show_menu()
-		
-	#if event.is_action_pressed("ui_cancel") and pause_menu.visible:
-		#pause_menu.hide_menu()
+		get_viewport().set_input_as_handled()
 	
 	if event.is_action_pressed("ui_accept"):  # SPACE key
 		spawn_test_projectile()
@@ -79,10 +81,8 @@ func spawn_projectile(pos: Vector2, dir: Vector2, projectile_speed: float = 200.
 	projectiles.add_child(projectile)
 
 func _on_player_hit():
-	print("Game Over! Time: %.2f, Grazes: %d" % [GameManager.get_time(), GameManager.get_graze_count()])
 	GameManager.stop_game()
-	# TODO: Show game over menu
-	get_tree().paused = true
+	game_over_menu.show_game_over(GameManager.get_time(), GameManager.get_graze_count())
 
 func _on_player_grazed():
 	GameManager.increment_graze()
@@ -123,6 +123,12 @@ func _on_settings_back():
 	pause_menu.show()
 
 func _on_pause_exit():
+	# Unpause before changing scene
+	get_tree().paused = false
+	GameManager.stop_game()
+	SceneManager.change_scene("res://scenes/menu.tscn")
+
+func _on_game_over_exit():
 	# Unpause before changing scene
 	get_tree().paused = false
 	GameManager.stop_game()

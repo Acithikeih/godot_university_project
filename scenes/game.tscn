@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dfktwdglyol8j"]
+[gd_scene load_steps=5 format=3 uid="uid://dfktwdglyol8j"]
 
 [ext_resource type="Script" uid="uid://bvyaiddi5dstm" path="res://scripts/game.gd" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://njv1y7mrmyxr" path="res://scenes/player.tscn" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://b24j63t7hjkc6" path="res://scenes/pause_menu.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://drmaspc1ueb3w" path="res://scenes/game_over_menu.tscn" id="4_lbhrr"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_yqjtg")
@@ -56,3 +57,5 @@ layout_mode = 2
 text = "graze"
 
 [node name="PauseMenu" parent="." instance=ExtResource("3_lnu2h")]
+
+[node name="GameOverMenu" parent="." instance=ExtResource("4_lbhrr")]

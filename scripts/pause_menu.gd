@@ -22,8 +22,9 @@ func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 func _input(event):
-	if visible and event.is_action_pressed("ui_cancel"):
+	if visible and event.is_action_pressed("Pause"):
 		_on_resume_pressed()
+		get_viewport().set_input_as_handled()
 
 func show_menu():
 	show()

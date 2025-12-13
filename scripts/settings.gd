@@ -14,6 +14,7 @@ signal back_pressed
 	"MoveLeft": $SettingsContainer/KeyMoveLeft/Button,
 	"MoveRight": $SettingsContainer/KeyMoveRight/Button,
 	"Focus": $SettingsContainer/KeyFocus/Button,
+	"Pause": $SettingsContainer/KeyPause/Button,
 }
 
 

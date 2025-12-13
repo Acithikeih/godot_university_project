@@ -114,3 +114,24 @@ func _process(delta) -> void:
 	# Clamp position to play area bounds
 	global_position.x = clamp(global_position.x, play_area.position.x, play_area.position.x + play_area.size.x)
 	global_position.y = clamp(global_position.y, play_area.position.y, play_area.position.y + play_area.size.y)
+
+func _notification(what):
+	if what == NOTIFICATION_PAUSED or what == NOTIFICATION_UNPAUSED:
+		# Reset movement state when pausing/unpausing
+		reset_movement_state()
+
+func reset_movement_state():
+	# Check actual key states and update movement
+	if Input.is_action_pressed("MoveLeft"):
+		last_horizontal = "left"
+	elif Input.is_action_pressed("MoveRight"):
+		last_horizontal = "right"
+	else:
+		last_horizontal = ""
+
+	if Input.is_action_pressed("MoveUp"):
+		last_vertical = "up"
+	elif Input.is_action_pressed("MoveDown"):
+		last_vertical = "down"
+	else:
+		last_vertical = ""

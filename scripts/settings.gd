@@ -4,9 +4,11 @@ extends CanvasLayer
 var awaiting_input = false
 var current_action = ""
 var previous_key = 0
-var came_from_game = false  # Track if we came from in-game
+var came_from_game = false
+
 
 signal back_pressed
+
 
 @onready var key_buttons = {
 	"MoveUp": $SettingsContainer/KeyMoveUp/Button,
@@ -18,10 +20,7 @@ signal back_pressed
 }
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
-	
 	update_key_labels()
 	
 	for action in key_buttons:
@@ -29,11 +28,9 @@ func _ready() -> void:
 	
 	$SettingsContainer/Back.pressed.connect(_on_back_pressed)
 	
-	# Check if game is paused (came from in-game)
-	came_from_game = get_tree().paused
+	came_from_game = get_tree().paused # if game paused then settings menu was accesed through pause menu 
 	if came_from_game:
 		process_mode = Node.PROCESS_MODE_ALWAYS
-
 
 
 func update_key_labels() -> void:
@@ -64,28 +61,19 @@ func _input(event) -> void:
 	if event is InputEventKey and event.pressed:
 		var key = event.physical_keycode if event.physical_keycode != 0 else event.keycode
 
-		if is_key_used(key, current_action):
-			key_buttons[current_action].text = OS.get_keycode_string(previous_key)
-
-			awaiting_input = false
-			current_action = ""
-			get_viewport().set_input_as_handled()
-		
-		InputManager.rebind_key(current_action, key)
-		InputManager.save_keys()
+		if not is_key_used(key, current_action):
+			InputManager.rebind_key(current_action, key)
+			InputManager.save_keys()
 
 		update_key_labels()
 
 		awaiting_input = false
 		current_action = ""
-
-		# without that ui action activets after rebinding
-		get_viewport().set_input_as_handled()
+		get_viewport().set_input_as_handled() # without that ui action activets after rebinding
 
 
 func _on_back_pressed() -> void:
 	if came_from_game:
-		emit_signal("back_pressed")
+		back_pressed.emit()
 	else:
-		# Return to main menu
 		SceneManager.change_scene("res://scenes/menu.tscn")

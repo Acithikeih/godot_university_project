@@ -1,22 +1,17 @@
 extends Node
 
 
-
 const CONFIG_PATH = "res://config/config.cfg"
 var config = ConfigFile.new()
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	load_keys()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-	
 func save_keys() -> void:
 	for action in InputMap.get_actions():
+		# skip builtin
 		if action.begins_with("ui_"):
 			continue
 		
@@ -29,6 +24,7 @@ func save_keys() -> void:
 	
 	config.save(CONFIG_PATH)
 
+
 func load_keys() -> void:
 	if config.load(CONFIG_PATH) != OK:
 		save_keys()
@@ -38,12 +34,14 @@ func load_keys() -> void:
 		var keycode = config.get_value("keys", action)
 		rebind_key(action, keycode)
 
+
 func rebind_key(action: String, keycode: int) -> void:
 	InputMap.action_erase_events(action)
 
 	var event = InputEventKey.new()
 	event.physical_keycode = keycode
 	InputMap.action_add_event(action, event)
+
 
 func get_key(action: String) -> int:
 	var events = InputMap.action_get_events(action)

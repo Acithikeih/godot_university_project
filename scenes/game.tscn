@@ -29,7 +29,7 @@ offset_bottom = 620.0
 position = Vector2(307, 238)
 normal_speed = 250.0
 focused_speed = 125.0
-initial_position = Vector2(200, 200)
+initial_position = Vector2(400, 300)
 graze_radius = 40.0
 player_color = Color(0, 0, 0, 1)
 hitbox_color = Color(1, 1, 0, 1)
@@ -53,11 +53,25 @@ layout_mode = 2
 text = "It's almost as good as Touhou
 (or even better)"
 
-[node name="Time" type="Label" parent="UI/VBoxContainer"]
+[node name="Time" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="Key" type="Label" parent="UI/VBoxContainer/Time"]
+layout_mode = 2
+text = "Time"
+
+[node name="Value" type="Label" parent="UI/VBoxContainer/Time"]
 layout_mode = 2
 text = "time"
 
-[node name="Graze" type="Label" parent="UI/VBoxContainer"]
+[node name="Graze" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="Key" type="Label" parent="UI/VBoxContainer/Graze"]
+layout_mode = 2
+text = "Graze"
+
+[node name="Value" type="Label" parent="UI/VBoxContainer/Graze"]
 layout_mode = 2
 text = "graze"
 

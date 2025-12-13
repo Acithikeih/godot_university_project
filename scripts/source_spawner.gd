@@ -1,5 +1,6 @@
 extends Node2D
 
+
 @export var play_area_size = Vector2(800, 600)
 @export var play_area_position = Vector2(20, 20)
 @export var safe_radius = 100.0  # Safe distance from player
@@ -7,11 +8,14 @@ extends Node2D
 @export var spawn_interval_max = 5.0
 @export var enabled = true
 
+
 var source_scene = preload("res://scripts/projectile_source.gd")
 var player: Node2D = null
 var projectile_container: Node2D = null
 
+
 @onready var spawn_timer = Timer.new()
+
 
 func _ready() -> void:
 	# Setup spawn timer
@@ -19,23 +23,29 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	start_spawning()
 
+
 func set_player_reference(p: Node2D) -> void:
 	player = p
 
+
 func set_projectile_container(container: Node2D) -> void:
 	projectile_container = container
+
 
 func start_spawning() -> void:
 	if enabled:
 		spawn_timer.start(randf_range(spawn_interval_min, spawn_interval_max))
 
+
 func stop_spawning() -> void:
 	spawn_timer.stop()
+
 
 func _on_spawn_timer_timeout() -> void:
 	spawn_random_source()
 	# Set next spawn time randomly
 	spawn_timer.start(randf_range(spawn_interval_min, spawn_interval_max))
+
 
 func spawn_random_source() -> void:
 	if not player or not projectile_container:
@@ -63,6 +73,7 @@ func spawn_random_source() -> void:
 	projectile_container.add_child(source)
 	source.set_player_reference(player)
 
+
 func get_safe_spawn_position() -> Vector2:
 	var max_attempts = 20
 	var spawn_pos = Vector2.ZERO
@@ -81,6 +92,7 @@ func get_safe_spawn_position() -> Vector2:
 
 	# Fallback: spawn at edge
 	return Vector2(play_area_size.x / 2, 0)
+
 
 func get_random_color() -> Color:
 	var colors = [

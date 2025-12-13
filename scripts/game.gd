@@ -1,22 +1,24 @@
 extends Node2D
 
+
 @export var play_area_rect = Rect2(20, 20, 800, 600)
+
 
 @onready var background = $Space/Background
 @onready var player = $Space/Clip/Player
 @onready var clip = $Space/Clip
 @onready var projectiles = $Space/Clip/Projectiles
 @onready var source_spawner = $Space/Clip/SourceSpawner
-
-@onready var time_label = $UI/VBoxContainer/Time
-@onready var graze_label = $UI/VBoxContainer/Graze
-
+@onready var time_label = $UI/VBoxContainer/Time/Value
+@onready var graze_label = $UI/VBoxContainer/Graze/Value
 @onready var pause_menu = $PauseMenu
 @onready var game_over_menu = $GameOverMenu
+
 
 var projectile_scene = preload("res://scenes/projectile.tscn")
 var settings_scene = preload("res://scenes/settings.tscn")
 var settings_instance = null
+
 
 func _ready() -> void:
 	# Set background size and position
@@ -42,23 +44,26 @@ func _ready() -> void:
 
 	pause_menu.resume_pressed.connect(_on_pause_resume)
 	pause_menu.settings_pressed.connect(_on_pause_settings)
-	pause_menu.exit_pressed.connect(_on_pause_exit)
+	pause_menu.quit_pressed.connect(_on_pause_quit)
 	
 	# Connect game over menu signals
-	game_over_menu.exit_pressed.connect(_on_game_over_exit)
+	game_over_menu.quit_pressed.connect(_on_game_over_quit)
 
 	# Start game
 	GameManager.start_game()
 	update_ui()
 
+
 func _process(delta) -> void:
 	if not get_tree().paused:
 		GameManager.update_time(delta)
+
 
 func _input(event) -> void:
 	if event.is_action_pressed("Pause") and settings_instance == null and not pause_menu.visible:
 		pause_menu.show_menu()
 		get_viewport().set_input_as_handled()
+
 
 func spawn_test_projectile() -> void:
 	var projectile = projectile_scene.instantiate()
@@ -75,6 +80,7 @@ func spawn_test_projectile() -> void:
 	# Add to container
 	projectiles.add_child(projectile)
 
+
 # Generic spawn function you'll use later
 func spawn_projectile(pos: Vector2, dir: Vector2, projectile_speed: float = 200.0) -> void:
 	var projectile = projectile_scene.instantiate()
@@ -83,26 +89,33 @@ func spawn_projectile(pos: Vector2, dir: Vector2, projectile_speed: float = 200.
 	projectile.speed = projectile_speed
 	projectiles.add_child(projectile)
 
+
 func _on_player_hit() -> void:
 	GameManager.stop_game()
 	game_over_menu.show_game_over(GameManager.get_time(), GameManager.get_graze_count())
 
+
 func _on_player_grazed() -> void:
 	GameManager.increment_graze()
+
 
 func _on_graze_updated(new_count) -> void:
 	graze_label.text = "%d" % new_count
 
+
 func _on_time_updated(new_time) -> void:
 	time_label.text = "%.2f" % new_time
+
 
 func update_ui() -> void:
 	time_label.text = "%.2f" % GameManager.get_time()
 	graze_label.text = "%d" % GameManager.get_graze_count()
 
+
 func _on_pause_resume() -> void:
-	# Already handled by pause_menu.hide_menu()
+	# handled in pause_menu/_on_resume_pressed
 	pass
+
 
 func _on_pause_settings() -> void:
 	# Hide pause menu temporarily
@@ -116,23 +129,23 @@ func _on_pause_settings() -> void:
 	# Connect back signal
 	settings_instance.back_pressed.connect(_on_settings_back)
 
+
 func _on_settings_back() -> void:
-	# Remove settings
+	# remove settings
 	if settings_instance:
 		settings_instance.queue_free()
 		settings_instance = null
 
-	# Show pause menu again
 	pause_menu.show()
 
-func _on_pause_exit() -> void:
-	# Unpause before changing scene
-	get_tree().paused = false
+
+func _on_pause_quit() -> void:
+	get_tree().paused = false # the game freezes if remains unpaused
 	GameManager.stop_game()
 	SceneManager.change_scene("res://scenes/menu.tscn")
 
-func _on_game_over_exit() -> void:
-	# Unpause before changing scene
-	get_tree().paused = false
+
+func _on_game_over_quit() -> void:
+	get_tree().paused = false # same as above
 	GameManager.stop_game()
 	SceneManager.change_scene("res://scenes/menu.tscn")

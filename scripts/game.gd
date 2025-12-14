@@ -21,37 +21,28 @@ var settings_instance = null
 
 
 func _ready() -> void:
-	# Set background size and position
 	background.position = play_area_rect.position
 	background.size = play_area_rect.size
-	
 	clip.position = play_area_rect.position
 	clip.size = play_area_rect.size
-
-	# Pass play area to player
 	player.play_area = Rect2(play_area_rect.position, play_area_rect.size)
-	
 	source_spawner.play_area_size = play_area_rect.size
 	source_spawner.play_area_position = play_area_rect.position
 	source_spawner.set_player_reference(player)
 	source_spawner.set_projectile_container(projectiles)
 	
-	player.player_hit.connect(_on_player_hit)
-	player.player_grazed.connect(_on_player_grazed)
-	
 	GameManager.graze_updated.connect(_on_graze_updated)
 	GameManager.time_updated.connect(_on_time_updated)
-
+	player.player_hit.connect(_on_player_hit)
+	player.player_grazed.connect(_on_player_grazed)
 	pause_menu.resume_pressed.connect(_on_pause_resume)
 	pause_menu.settings_pressed.connect(_on_pause_settings)
 	pause_menu.quit_pressed.connect(_on_pause_quit)
-	
-	# Connect game over menu signals
 	game_over_menu.quit_pressed.connect(_on_game_over_quit)
 
-	# Start game
 	GameManager.start_game()
-	update_ui()
+	time_label.text = "0.00"
+	graze_label.text = "0"
 
 
 func _process(delta) -> void:
@@ -60,34 +51,9 @@ func _process(delta) -> void:
 
 
 func _input(event) -> void:
-	if event.is_action_pressed("Pause") and settings_instance == null and not pause_menu.visible:
+	if event.is_action_pressed("Pause") and not pause_menu.visible:
 		pause_menu.show_menu()
-		get_viewport().set_input_as_handled()
-
-
-func spawn_test_projectile() -> void:
-	var projectile = projectile_scene.instantiate()
-
-	# Spawn at top center of play area (relative to ClipRect)
-	projectile.position = Vector2(play_area_rect.size.x / 2, 0)
-
-	# Set direction (downward)
-	projectile.set_direction(Vector2.DOWN)
-
-	# Set speed (optional, uses default if not set)
-	projectile.speed = 150.0
-
-	# Add to container
-	projectiles.add_child(projectile)
-
-
-# Generic spawn function you'll use later
-func spawn_projectile(pos: Vector2, dir: Vector2, projectile_speed: float = 200.0) -> void:
-	var projectile = projectile_scene.instantiate()
-	projectile.position = pos
-	projectile.set_direction(dir)
-	projectile.speed = projectile_speed
-	projectiles.add_child(projectile)
+		get_viewport().set_input_as_handled() # blocking ui input
 
 
 func _on_player_hit() -> void:
@@ -107,31 +73,22 @@ func _on_time_updated(new_time) -> void:
 	time_label.text = "%.2f" % new_time
 
 
-func update_ui() -> void:
-	time_label.text = "%.2f" % GameManager.get_time()
-	graze_label.text = "%d" % GameManager.get_graze_count()
-
-
 func _on_pause_resume() -> void:
 	# handled in pause_menu/_on_resume_pressed
 	pass
 
 
 func _on_pause_settings() -> void:
-	# Hide pause menu temporarily
 	pause_menu.hide()
 
 	settings_instance = settings_scene.instantiate()
 	settings_instance.process_mode = Node.PROCESS_MODE_ALWAYS
 	settings_instance.came_from_game = true
 	add_child(settings_instance)
-
-	# Connect back signal
 	settings_instance.back_pressed.connect(_on_settings_back)
 
 
 func _on_settings_back() -> void:
-	# remove settings
 	if settings_instance:
 		settings_instance.queue_free()
 		settings_instance = null
@@ -140,7 +97,7 @@ func _on_settings_back() -> void:
 
 
 func _on_pause_quit() -> void:
-	get_tree().paused = false # the game freezes if remains unpaused
+	get_tree().paused = false # otherwise game will freeze
 	GameManager.stop_game()
 	SceneManager.change_scene("res://scenes/menu.tscn")
 

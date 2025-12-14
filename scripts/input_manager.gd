@@ -11,7 +11,7 @@ func _ready() -> void:
 
 func save_keys() -> void:
 	for action in InputMap.get_actions():
-		# skip builtin
+		# skip builtins
 		if action.begins_with("ui_"):
 			continue
 		
